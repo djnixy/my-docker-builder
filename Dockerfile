@@ -1,6 +1,7 @@
 # Use a lightweight Ubuntu base image
 FROM ubuntu:latest
-
+SHELL ["/bin/bash", "-c"]
+RUN ln -sf /bin/bash /bin/sh
 # Set noninteractive mode to avoid prompts during installation
 ARG DEBIAN_FRONTEND=noninteractive
 
