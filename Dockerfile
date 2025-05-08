@@ -57,14 +57,14 @@ RUN curl -sSL -o argo https://github.com/argoproj/argo-workflows/releases/latest
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && chmod +x /usr/local/bin/yq
 
 # Create a non-root user
-RUN useradd -m runner && \
-    echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+# RUN useradd -m runner && \
+#     echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Set working directory
-WORKDIR /home/runner
+# # Set working directory
+# WORKDIR /home/runner
 
 # Install GitHub Actions Runner
-ENV RUNNER_VERSION=2.316.1
+ENV RUNNER_VERSION=2.323.0
 RUN curl -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
     -o actions-runner.tar.gz && \
     tar xzf actions-runner.tar.gz && \
@@ -75,10 +75,10 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Set permissions
-RUN chown -R runner:runner /home/runner
+# RUN chown -R runner:runner /home/runner
 
-USER runner
-ENV HOME=/home/runner
-WORKDIR /home/runner
+# USER runner
+# ENV HOME=/home/runner
+# WORKDIR /home/runner
 
 ENTRYPOINT ["/entrypoint.sh"]
