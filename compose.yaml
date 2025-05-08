@@ -1,6 +1,6 @@
 services:
   github-actions-tools:
-    image: nikiakbar/my-docker-builder
+    image: nikiakbar/docker-builder
     container_name: github-actions-runner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Allows Docker commands within the container
