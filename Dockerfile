@@ -34,11 +34,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf awscliv2.zip ./aws
 
-# Install kubectl
-# RUN curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-#     chmod +x kubectl && \
-#     mv kubectl /usr/local/bin/kubectl
-
 # Install doctl
 RUN curl -LO "https://github.com/digitalocean/doctl/releases/download/v1.104.0/doctl-1.104.0-linux-amd64.tar.gz" && \
     tar xzf doctl-1.104.0-linux-amd64.tar.gz && \
@@ -56,13 +51,6 @@ RUN curl -sSL -o argo https://github.com/argoproj/argo-workflows/releases/latest
 # Install yq
 RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && chmod +x /usr/local/bin/yq
 
-# Create a non-root user
-# RUN useradd -m runner && \
-#     echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
-# # Set working directory
-# WORKDIR /home/runner
-
 # Install GitHub Actions Runner
 ENV RUNNER_VERSION=2.323.0
 RUN curl -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
@@ -74,11 +62,17 @@ RUN curl -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSIO
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Set permissions
-# RUN chown -R runner:runner /home/runner
+# No user switching to non-root user is needed; continue with root user
+USER root
 
-# USER runner
-# ENV HOME=/home/runner
-# WORKDIR /home/runner
+# Set the working directory
+WORKDIR /home/runner
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Set the entrypoint to the script
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+
+# Ensure the runner's home directory exists
+RUN mkdir -p /home/runner
+
+# Default command
+CMD ["/bin/bash"]
