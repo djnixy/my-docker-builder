@@ -1,7 +1,12 @@
 services:
   github-actions-tools:
     image: nikiakbar/my-docker-builder
-    container_name: my-docker-builder
+    container_name: github-actions-runner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Allows Docker commands within the container
-    working_dir: /github/workspace
+    environment:
+      REPO_URL: https://github.com/your-org/your-repo
+      RUNNER_TOKEN: your_registration_token
+      RUNNER_LABELS: self-hosted,docker,linux
+    working_dir: /home/runner
+    restart: unless-stopped
